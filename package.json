@@ -20,13 +20,5 @@
     "ts-jest": "^29.1.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "**/*.ts": [
-    "npm run test:staged"
-]
+  }
 }
