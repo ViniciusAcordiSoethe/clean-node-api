@@ -78,4 +78,21 @@ describe('SignUp Controller', () => {
         expect(httpResponse.statusCode).toBe(400)
         expect(httpResponse.body).toEqual(new InvalidParamsError('email'))
     })
+
+    test('Should return 200 if valid data is provided', () => {
+        const {sut} = makeSut()
+        const httpRequest = {
+            body: {
+                name: "any_name",
+                email: "any_email@any_email.com",
+                password: "any_password"
+            }
+        }
+        const httpResponse = sut.handle(httpRequest)
+        expect(httpResponse.statusCode).toBe(200)
+        expect(httpResponse.body).toEqual({
+            name: 'any_name',
+            email: 'any_email@any_email.com'
+        })
+    })
 })
