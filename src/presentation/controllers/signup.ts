@@ -1,6 +1,7 @@
 import { HttpRequest , HttpResponse} from "../protocols/http"
 import { MissingParamsError } from "../errors/missing-params-error"
 import { InvalidParamsError } from "../errors/invalid-params-error"
+import { ServerError} from "../errors/server-error"
 import { badRequest } from "../helpers/http-helper"
 import { Controller } from "../protocols/controller"
 import { EmailValidator } from "../protocols/email-validator"
@@ -11,23 +12,30 @@ export class SignUpController implements Controller {
         this.emailValidator = emailValidator
     }
     handle(httpRequest: HttpRequest) : HttpResponse {
-        const requiredFields = ['name', 'email', 'password']
+        try {
+            const requiredFields = ['name', 'email', 'password']
 
-        for (const field of requiredFields) {
-            if(!httpRequest.body[field]) {
-                return badRequest(new MissingParamsError(field))
+            for (const field of requiredFields) {
+                if(!httpRequest.body[field]) {
+                    return badRequest(new MissingParamsError(field))
+                }
             }
-        }
-        const emailIsValid = this.emailValidator.isValid(httpRequest.body.email)
+            const emailIsValid = this.emailValidator.isValid(httpRequest.body.email)
 
-        if(!emailIsValid) {
-            return badRequest(new InvalidParamsError('email'))
-        }
-        return {
-            statusCode: 200,
-            body: {
-                name: httpRequest.body.name,
-                email: httpRequest.body.email
+            if(!emailIsValid) {
+                return badRequest(new InvalidParamsError('email'))
+            }
+            return {
+                statusCode: 200,
+                body: {
+                    name: httpRequest.body.name,
+                    email: httpRequest.body.email
+                }
+            }
+        }catch(error) {
+            return {
+                statusCode: 500,
+                body: new ServerError()
             }
         }
     }
