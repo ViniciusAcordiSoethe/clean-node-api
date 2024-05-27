@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --passWithNoTests --watch",
+    "tests": "jest --passWithNoTests --watchAll",
     "test:staged": "jest --passWithNoTests",
     "prepare": "husky"
   },
