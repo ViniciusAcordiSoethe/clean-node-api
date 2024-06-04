@@ -12,23 +12,29 @@ export class SignUpController implements Controller {
     handle(httpRequest: HttpRequest) : HttpResponse {
         try {
             const requiredFields = ['name', 'email', 'password']
-
+            const { name, email, password } = httpRequest.body
+            
             for (const field of requiredFields) {
                 if(!httpRequest.body[field]) {
                     return badRequest(new MissingParamsError(field))
                 }
             }
-            const emailIsValid = this.emailValidator.isValid(httpRequest.body.email)
+            const emailIsValid = this.emailValidator.isValid(email)
 
             if(!emailIsValid) {
                 return badRequest(new InvalidParamsError('email'))
             }
 
-            this.addAccount.add({
-                name: httpRequest.body.name,
-                email: httpRequest.body.email,
-                password: httpRequest.body.password
+            const account = this.addAccount.add({
+                name,
+                email,
+                password
             })
+        
+            return {
+                statusCode: 200,
+                body: account
+            }
         }catch(error) {
             return serverError()
         }
