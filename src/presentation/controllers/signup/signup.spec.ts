@@ -116,24 +116,22 @@ describe('SignUp Controller', () => {
     })
 
     test('Shold return 500 if EmailValidator throws', () => {
-        class EmailValidatorStub implements EmailValidator {
-            isValid(email: string): boolean {
-                throw new Error()
-            }
-        }
-        const emailValidatorStub = new EmailValidatorStub()
-        const sut = new SignUpController(emailValidatorStub , makeAddAccount())
-        const httpRequest = {
-            body: {
-                name: "any_name",
-                email: "any_email@any_email.com",
-                password: "any_password"
-            }
-        }
 
-        const httpResponse = sut.handle(httpRequest)
-        expect(httpResponse.statusCode).toBe(500)
-        expect(httpResponse.body).toEqual(new ServerError())
+       const {sut , emailValidatorStub} = makeSut()
+       jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
+           throw new Error()
+       })
+       const httpRequest = {
+           body: {
+               name: "any_name",
+               email: "any_email@any_email.com",
+               password: "any_password"
+           }
+       }
+
+       const httpResponse = sut.handle(httpRequest)
+       expect(httpResponse.statusCode).toBe(500)
+       expect(httpResponse.body).toEqual(new ServerError())
     })
 
     test('Should call AddAccount with correct values', () => {
@@ -152,5 +150,24 @@ describe('SignUp Controller', () => {
             email: "any_email@any_email.com",
             password: "any_password"
         })
+    })
+
+    test('Shold return 500 if addAccount throws', () => {
+
+       const {sut , addAccountStub} = makeSut()
+       jest.spyOn(addAccountStub, 'add').mockImplementationOnce(() => {
+           throw new Error()
+       })
+       const httpRequest = {
+           body: {
+               name: "any_name",
+               email: "any_email@any_email.com",
+               password: "any_password"
+           }
+       }
+
+       const httpResponse = sut.handle(httpRequest)
+       expect(httpResponse.statusCode).toBe(500)
+       expect(httpResponse.body).toEqual(new ServerError())
     })
 })
