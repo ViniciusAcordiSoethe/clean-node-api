@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest --passWithNoTests --watch",
-    "tests": "jest --passWithNoTests --watchAll",
+    "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
+    "test:watch": "npm test -- --watchAll",
+    "test:verbose": "jest --passWithNoTests --watchAll",
     "test:staged": "jest --passWithNoTests",
+    "test:ci": "npm run test -- --coverage",
     "prepare": "husky"
   },
   "keywords": [],
